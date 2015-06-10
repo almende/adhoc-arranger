@@ -1,24 +1,10 @@
 package com.almende;
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.*;
+import org.apache.wink.server.internal.servlet.RestServlet;
 
-public class Main extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
-		showHome(req, resp);
-	}
-
-	private void showHome(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		resp.getWriter().print("Hello from Adhoc-Arranger!");
-	}
+public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(Integer.valueOf(System.getenv("PORT")));
@@ -26,7 +12,12 @@ public class Main extends HttpServlet {
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
-		context.addServlet(new ServletHolder(new Main()), "/*");
+
+		RestServlet servlet = new RestServlet();
+		ServletHolder sh = new ServletHolder(servlet);
+		sh.setInitParameter("javax.ws.rs.Application", RestApplication.class.getName());
+		context.addServlet(sh, "/api/v1/*");
+
 		server.start();
 		server.join();
 	}

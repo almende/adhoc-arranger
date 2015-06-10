@@ -16,12 +16,16 @@ $ foreman start web
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
+
 ## Deploying to Heroku
 
 ```sh
 $ git push heroku master
 $ heroku open
 ```
+
+The app is deployed at: https://adhoc-arranger.herokuapp.com/
+
 
 ## Documentation
 
