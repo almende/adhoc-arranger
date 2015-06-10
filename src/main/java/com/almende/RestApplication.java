@@ -30,5 +30,5 @@ public class RestApplication extends Application {
 	public String status () {
 		return "Status";
 	}
-	
+
 }

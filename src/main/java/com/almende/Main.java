@@ -11,13 +11,17 @@ public class Main {
 		ServletContextHandler context = new ServletContextHandler(
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
-		server.setHandler(context);
 
-		RestServlet servlet = new RestServlet();
-		ServletHolder sh = new ServletHolder(servlet);
+		// Static file handling
+		context.setResourceBase("webapp");
+		context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
+		
+		// REST API 
+		ServletHolder sh = new ServletHolder(new RestServlet());
 		sh.setInitParameter("javax.ws.rs.Application", RestApplication.class.getName());
 		context.addServlet(sh, "/api/v1/*");
-
+		
+		server.setHandler(context);
 		server.start();
 		server.join();
 	}

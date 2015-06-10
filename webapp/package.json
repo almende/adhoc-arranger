@@ -1,0 +1,11 @@
+{
+  "name": "adhoc-arranger",
+  "version": "0.0.1",
+  "description": "Arrange an ad hoc contact moment between two people",
+  "main": "index.html",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^0.13.3",
+    "react-router": "^0.13.3"
+  }
+}
