@@ -1,7 +1,7 @@
 var Account = React.createClass({
   getInitialState: function () {
     return {
-      user: 'User X'
+      user: 'user1'
     }
   },
 
