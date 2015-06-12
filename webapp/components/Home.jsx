@@ -154,7 +154,9 @@ var Home = React.createClass({
       dataType: 'json',
       type: 'GET',
       success: function (state) {
-        this.setState(state);
+        if (state){
+          this.setState(state);
+        }
       }.bind(this),
       error: function (err) {
         console.error('Error', err);
@@ -218,6 +220,7 @@ var Home = React.createClass({
   findLocation: function (location) {
     for (var name in this.LOCATIONS) {
       var l = this.LOCATIONS[name];
+      // TODO: allow deviations of say 20 meters
       if (location.latitude === l.latitude && location.longitude === l.longitude) {
         return name;
       }
