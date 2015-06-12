@@ -6,9 +6,9 @@ var Account = React.createClass({
   },
 
   render: function () {
-    if (this.props.params && this.props.params.user) {
+    if (this.props.user) {
       return <div className="account">
-          You are logged in as <b>{this.props.params.user}</b> &nbsp;
+          You are logged in as <b>{this.props.user}</b> &nbsp;
           <a href="#/">[log out]</a>
         </div>
     }
@@ -24,9 +24,13 @@ var Account = React.createClass({
   },
 
   handleUser: function () {
-    this.setState({
-      user: React.findDOMNode(this.refs.name).value
-    });
+    var user = React.findDOMNode(this.refs.name).value;
+
+    this.setState({user: user});
+
+    if (this.props.onChange) {
+      this.props.onChange(user);
+    }
   },
 
   login: function (event) {

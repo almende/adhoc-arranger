@@ -70,7 +70,9 @@ public class RestApplication extends Application {
 		JSONArray json = new JSONArray();
 		
 		for (Subscription subscription : subscriptions) {
-			json.put(subscription.toJSON());
+			if (subscription.subscriber == user) {
+				json.put(subscription.toJSON());
+			};
 		}
 		
 		return json;

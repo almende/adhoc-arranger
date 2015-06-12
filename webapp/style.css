@@ -1,10 +1,33 @@
-html, body, input {
+html, body {
+  max-width: 600px;
+}
+
+html, body, input, button {
   font-family: verdana, sans;
   font-size: 11pt;
 }
 
-input {
+input, button {
   padding: 5px 10px;
+  margin: 0 5px;
+}
+
+h1 {
+  background: #e4591c;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+h2 {
+  color: #e4591c;
+  margin: 30px 0;
+}
+
+.logo {
+  color: #e4591c;
+  color: white;
+  font-weight: bold;
+  font-size: 120%;
 }
 
 div.account {
@@ -18,4 +41,12 @@ div.account {
   /*position: absolute;*/
   /*right: 10px;*/
   /*top: 10px;*/
+}
+
+th, td {
+  padding: 5px 10px;
+}
+
+th {
+  text-align: left;
 }

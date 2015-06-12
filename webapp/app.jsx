@@ -5,8 +5,8 @@ function init() {
 
   var routes = (
       <Route name="app" path="/" >
-        <DefaultRoute name="home" handler={Home}/>
-        <Route name="user" path="/user/:user" handler={User}/>
+        <DefaultRoute name="home" handler={Login}/>
+        <Route name="user" path="/user/:user" handler={Home}/>
       </Route>
   );
 
