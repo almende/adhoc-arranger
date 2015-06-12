@@ -53,9 +53,9 @@ public class RestApplication extends Application {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONObject putState (@PathParam("user") String user, JSONObject json) throws JSONException {
-		// merge with existing status
 		State updated = users.containsKey(user) ? users.get(user) : new State();
 		
+		// merge with existing status
 		updated.putJSON(json);
 		
 		users.put(user, updated);
@@ -70,7 +70,7 @@ public class RestApplication extends Application {
 		JSONArray json = new JSONArray();
 		
 		for (Subscription subscription : subscriptions) {
-			if (subscription.subscriber == user) {
+			if (user.equals(subscription.subscriber)) {
 				json.put(subscription.toJSON());
 			};
 		}
@@ -80,7 +80,6 @@ public class RestApplication extends Application {
 	
 	@PUT
 	@Path("/subscriptions/{user}/publisher/{publisher}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONArray putSubscription (@PathParam("user") String user, 
 			@PathParam("publisher") String publisher) throws JSONException {

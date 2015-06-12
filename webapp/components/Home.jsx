@@ -19,6 +19,13 @@ var Home = React.createClass({
     if (this.props.params.user) {
       contents = <div>
         {this.renderState()}
+        <h2>Notify me</h2>
+        <p>
+          Notify me when a user I subscribed for arrives at my location.
+        </p>
+        <p>
+          <i>To be implemented...</i>
+        </p>
         {this.renderSimulate()}
       </div>;
     }
