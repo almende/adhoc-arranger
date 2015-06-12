@@ -1,11 +1,16 @@
 var Home = React.createClass({
   getInitialState: function () {
-    return {}
+    return {
+      subscriptions: [],
+      publisher: 'user2'
+    }
   },
 
   LOCATIONS: {
     'Almende': {latitude: 51.908817, longitude: 4.479589},
-    'Rotterdam CS': {latitude: 51.925093, longitude: 4.469424}
+    'Ask CS': {latitude: 51.920505, longitude: 4.454438},
+    'Sense OS': {latitude: 51.903598, longitude: 4.45994},
+    'Rotterdam CS': {latitude: 51.916563, longitude: 4.481416}
   },
 
   render: function () {
@@ -31,7 +36,7 @@ var Home = React.createClass({
 
     return <div>
       <h2>Me</h2>
-      <p>The table below shows your current state:</p>
+      <p>The table below shows your current state.</p>
       <table>
         <tbody>
         <tr>
@@ -55,21 +60,40 @@ var Home = React.createClass({
     </div>
   },
 
-  renderNotify: function () {
+  renderSubscribe: function () {
     return <div>
       <h2>Notify me</h2>
       <p>
-        Notify me when user <input ref="publisher" value="user2" /> arrives at my location.
-        <input type="button" value="Register" />
+        Notify me when:
       </p>
+      <div className="form">
+        <p>
+          User <input ref="publisher" value={this.state.publisher} onChange={this.handlePublisher} /> arrives at my location. <input type="button" value="Subscribe" onClick={this.subscribe} />
+        </p>
+      </div>
+
+      {this.renderSubscriptions()}
     </div>
+  },
+
+  renderSubscriptions: function () {
+    var subscriptions = this.state.subscriptions.map(function (subscription) {
+      return <div key={subscription.publisher}>
+        {subscription.publisher}
+      </div>
+    });
+
+    return <div>
+          <h3>Subscriptions</h3>
+          {subscriptions.length > 0 ? subscriptions : '(none)'}
+        </div>
   },
 
   renderSimulate: function () {
     return <div>
       <h2>Simulate</h2>
       <p>
-        Simulate your own state for testing purposes:
+        Simulate your own state for testing purposes.
       </p>
 
       <table>
@@ -77,8 +101,11 @@ var Home = React.createClass({
         <tr>
           <th>Location</th>
           <td>
-            <button onClick={this.saveState.bind(this, {location: this.LOCATIONS['Almende']})}>Almende</button>
-            <button onClick={this.saveState.bind(this, {location: this.LOCATIONS['Rotterdam CS']})}>Rotterdam CS</button>
+            {
+                Object.keys(this.LOCATIONS).map(function (location) {
+                  return <button key={location} onClick={this.saveState.bind(this, {location: this.LOCATIONS[location]})}>{location}</button>
+                }.bind(this))
+            }
           </td>
         </tr>
         <tr>
@@ -102,12 +129,21 @@ var Home = React.createClass({
 
   componentDidMount: function () {
     this.loadState();
+    this.loadSubscriptions();
+  },
+
+  handlePublisher: function (event) {
+    this.setState({publisher: event.target.value});
+  },
+
+  subscribe: function () {
+    this.saveSubscription(this.state.publisher);
   },
 
   // TODO: regularly read the current state of the user from the server
   loadState: function () {
     $.ajax({
-      url: '/api/v1/state/' + this.props.params.user,
+      url: `/api/v1/state/${this.props.params.user}`,
       dataType: 'json',
       type: 'GET',
       success: function (state) {
@@ -120,13 +156,41 @@ var Home = React.createClass({
 
   saveState: function (state) {
     $.ajax({
-      url: '/api/v1/state/' + this.props.params.user,
+      url: `/api/v1/state/${this.props.params.user}`,
       dataType: 'json',
       data: JSON.stringify(state),
       contentType: 'application/json; charset=utf-8',
       type: 'PUT',
       success: function (state) {
         this.setState(state);
+      }.bind(this),
+      error: function (err) {
+        console.error('Error', err);
+      }.bind(this)
+    })
+  },
+
+  saveSubscription: function (publisher) {
+    $.ajax({
+      url: `/api/v1/subscriptions/${this.props.params.user}/publisher/${publisher}`,
+      dataType: 'json',
+      type: 'PUT',
+      success: function (subscriptions) {
+        this.setState({subscriptions: subscriptions});
+      }.bind(this),
+      error: function (err) {
+        console.error('Error', err);
+      }.bind(this)
+    })
+  },
+
+  loadSubscriptions: function () {
+    $.ajax({
+      url: `/api/v1/subscriptions/${this.props.params.user}`,
+      dataType: 'json',
+      type: 'GET',
+      success: function (subscriptions) {
+        this.setState({subscriptions: subscriptions});
       }.bind(this),
       error: function (err) {
         console.error('Error', err);

@@ -7,13 +7,13 @@ var Account = React.createClass({
 
   render: function () {
     if (this.props.user) {
-      return <div className="account">
+      return <div className="form">
           You are logged in as <b>{this.props.user}</b> &nbsp;
           <a href="#/">[log out]</a>
         </div>
     }
     else {
-      return <div className="account">
+      return <div className="form">
         <form id="login" onSubmit={this.login}>
           Log in: &nbsp;
           <input ref="name" value={this.state.user} placeholder="username" onChange={this.handleUser} /> &nbsp;

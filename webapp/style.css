@@ -9,7 +9,7 @@ html, body, input, button {
 
 input, button {
   padding: 5px 10px;
-  margin: 0 5px;
+  margin: 5px;
 }
 
 h1 {
@@ -30,17 +30,13 @@ h2 {
   font-size: 120%;
 }
 
-div.account {
+div.form {
   background-color: #f5f5f5;
   border: 1px solid #dddddd;
   padding: 10px;
   border-radius: 5px;
 
   display: inline-block;
-
-  /*position: absolute;*/
-  /*right: 10px;*/
-  /*top: 10px;*/
 }
 
 th, td {
