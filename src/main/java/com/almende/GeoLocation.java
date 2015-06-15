@@ -13,6 +13,10 @@ public class GeoLocation {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+	
+	public boolean equals(GeoLocation other) {
+		return latitude == other.latitude && longitude == other.longitude;
+	}
 
 	public GeoLocation putJSON(JSONObject json) throws JSONException {
 		if (json.has("longitude")) {

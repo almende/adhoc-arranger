@@ -13,6 +13,10 @@ public class Subscription {
 		this.subscriber = subscriber;
 		this.publisher = publisher;
 	}
+	
+	public String getId() {
+		return this.subscriber + "," + this.publisher;
+	}
 
 	public Subscription putJSON(JSONObject json) throws JSONException {
 		if (json.has("subscriber")) {
@@ -35,5 +39,5 @@ public class Subscription {
 		return new Subscription(
 				json.getString("subscriber"), 
 				json.getString("publisher"));
-	}
+	}	
 }

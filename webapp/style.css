@@ -30,6 +30,10 @@ h2 {
   font-size: 120%;
 }
 
+#app {
+  position: relative;
+}
+
 div.form {
   background-color: #f5f5f5;
   border: 1px solid #dddddd;
@@ -37,6 +41,30 @@ div.form {
   border-radius: 5px;
 
   display: inline-block;
+}
+
+div.notifications {
+  position: fixed;
+  top: 50px;
+  width: 100%;
+  max-width: 600px;
+}
+
+div.notifications div.notification {
+  width: 400px;
+  margin: 0 auto;
+
+  background-color: #fffdae;
+  border: 1px solid #ffd600;
+  border-radius: 3px;
+  padding: 10px;
+  line-height: 40px;
+
+  box-shadow: 2px 2px 15px rgba(128,128,128, 0.5);
+}
+
+div.notifications div.notification button.ok {
+  float: right;
 }
 
 th, td {

@@ -2,6 +2,7 @@ var Home = React.createClass({
   getInitialState: function () {
     return {
       subscriptions: [],
+      triggers: [],
       publisher: 'user2'
     }
   },
@@ -9,8 +10,8 @@ var Home = React.createClass({
   LOCATIONS: {
     'Almende': {latitude: 51.908817, longitude: 4.479589},
     'Ask CS': {latitude: 51.920505, longitude: 4.454438},
-    'Sense OS': {latitude: 51.903598, longitude: 4.45994},
-    'Rotterdam CS': {latitude: 51.916563, longitude: 4.481416}
+    'Rotterdam CS': {latitude: 51.916563, longitude: 4.481416},
+    'Sense OS': {latitude: 51.903598, longitude: 4.45994}
   },
 
   render: function () {
@@ -19,14 +20,9 @@ var Home = React.createClass({
     if (this.props.params.user) {
       contents = <div>
         {this.renderState()}
-        <h2>Notify me</h2>
-        <p>
-          Notify me when a user I subscribed for arrives at my location.
-        </p>
-        <p>
-          <i>To be implemented...</i>
-        </p>
+        {this.renderSubscribe()}
         {this.renderSimulate()}
+        {this.renderNotifications()}
       </div>;
     }
 
@@ -86,9 +82,9 @@ var Home = React.createClass({
   renderSubscriptions: function () {
     var subscriptions = this.state.subscriptions.map(function (subscription) {
       return <div key={subscription.publisher}>
-        {subscription.publisher}
+        {subscription.publisher} <button onClick={this.deleteSubscription.bind(this, subscription.publisher)}>Remove</button>
       </div>
-    });
+    }.bind(this));
 
     return <div>
           <h3>Subscriptions</h3>
@@ -109,7 +105,7 @@ var Home = React.createClass({
           <th>Location</th>
           <td>
             {
-                Object.keys(this.LOCATIONS).map(function (location) {
+                Object.keys(this.LOCATIONS).sort().map(function (location) {
                   return <button key={location} onClick={this.saveState.bind(this, {location: this.LOCATIONS[location]})}>{location}</button>
                 }.bind(this))
             }
@@ -134,9 +130,36 @@ var Home = React.createClass({
     </div>
   },
 
+  renderNotifications: function () {
+    var notifications = this.state.triggers.map(function (trigger) {
+      return <div key={trigger.publisher} className="notification">
+        <b>{trigger.publisher}</b> just arrived at your location. <button className="ok" onClick={this.deleteTrigger.bind(this, trigger.publisher)}>Ok</button>
+      </div>
+    }.bind(this));
+
+    var src = Math.random() > 0.1 ? 'audio/phonering.wav' : 'audio/halleluj.wav';
+
+    return <div className="notifications">
+      {notifications}
+      <audio id="beep" src={src} preload="auto"></audio>
+    </div>;
+  },
+
   componentDidMount: function () {
     this.loadState();
     this.loadSubscriptions();
+
+    this.loadTriggers();
+    this.messageTimer = setInterval(function () {
+      this.loadTriggers();
+    }.bind(this), 10000);
+
+    window.addEventListener('focus', this.loadTriggers);
+  },
+
+  componentWillUnmount: function () {
+    clearTimeout(this.messageTimer);
+    window.removeEventListener('focus', this.loadTriggers);
   },
 
   handlePublisher: function (event) {
@@ -147,7 +170,16 @@ var Home = React.createClass({
     this.saveSubscription(this.state.publisher);
   },
 
-  // TODO: regularly read the current state of the user from the server
+  deleteTrigger: function (publisher) {
+    var triggers = this.state.triggers.filter(function (trigger) {
+      return trigger.publisher !== publisher
+    });
+    this.setState({triggers: triggers});
+
+    this.deleteSubscription(publisher);
+  },
+
+  // TODO: use some client rest library
   loadState: function () {
     $.ajax({
       url: `/api/v1/state/${this.props.params.user}`,
@@ -161,7 +193,8 @@ var Home = React.createClass({
       error: function (err) {
         console.error('Error', err);
       }.bind(this)
-    })  },
+    })
+  },
 
   saveState: function (state) {
     $.ajax({
@@ -193,6 +226,20 @@ var Home = React.createClass({
     })
   },
 
+  deleteSubscription: function (publisher) {
+    $.ajax({
+      url: `/api/v1/subscriptions/${this.props.params.user}/publisher/${publisher}`,
+      dataType: 'json',
+      type: 'DELETE',
+      success: function (subscriptions) {
+        this.setState({subscriptions: subscriptions});
+      }.bind(this),
+      error: function (err) {
+        console.error('Error', err);
+      }.bind(this)
+    })
+  },
+
   loadSubscriptions: function () {
     $.ajax({
       url: `/api/v1/subscriptions/${this.props.params.user}`,
@@ -200,6 +247,32 @@ var Home = React.createClass({
       type: 'GET',
       success: function (subscriptions) {
         this.setState({subscriptions: subscriptions});
+      }.bind(this),
+      error: function (err) {
+        console.error('Error', err);
+      }.bind(this)
+    })
+  },
+
+  loadTriggers: function () {
+    $.ajax({
+      url: `/api/v1/triggers/${this.props.params.user}`,
+      dataType: 'json',
+      type: 'GET',
+      success: function (triggers) {
+        console.log('triggers', triggers);
+
+        // play a sound
+        if (triggers.length > this.state.triggers.length) {
+          document.getElementById('beep').play()
+        }
+
+        // FIXME: reloading subscriptions should not be triggered here but in the messageTimer
+        if (triggers.length > 0) {
+          this.loadSubscriptions();
+        }
+
+        this.setState({triggers: triggers});
       }.bind(this),
       error: function (err) {
         console.error('Error', err);
