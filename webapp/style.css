@@ -51,6 +51,7 @@ div.notifications {
 
 div.notifications div.notification {
   width: 400px;
+  max-width: 100%;
   margin: 0 auto;
 
   background-color: #fffdae;
