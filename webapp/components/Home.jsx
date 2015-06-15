@@ -158,7 +158,7 @@ var Home = React.createClass({
     this.loadTriggers();
     this.messageTimer = setInterval(function () {
       this.loadTriggers();
-    }.bind(this), 10000);
+    }.bind(this), 1000);
 
     window.addEventListener('focus', this.loadTriggers);
   },
