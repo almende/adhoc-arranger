@@ -5,6 +5,7 @@
   "main": "index.html",
   "license": "ISC",
   "dependencies": {
+    "font-awesome": "^4.3.0",
     "jquery": "^2.1.4",
     "react": "^0.13.3",
     "react-router": "^0.13.3"

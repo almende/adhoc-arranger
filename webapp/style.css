@@ -1,10 +1,10 @@
-html, body {
-  max-width: 600px;
-}
-
 html, body, input, button {
   font-family: verdana, sans;
   font-size: 11pt;
+}
+
+html, body, div.notifications {
+  max-width: 728px;
 }
 
 input, button {
@@ -47,7 +47,6 @@ div.notifications {
   position: fixed;
   top: 50px;
   width: 100%;
-  max-width: 600px;
 }
 
 div.notifications div.notification {

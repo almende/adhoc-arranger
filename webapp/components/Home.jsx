@@ -70,9 +70,11 @@ var Home = React.createClass({
         Notify me when:
       </p>
       <div className="form">
-        <p>
-          User <input ref="publisher" value={this.state.publisher} onChange={this.handlePublisher} /> arrives at my location. <input type="button" value="Subscribe" onClick={this.subscribe} />
-        </p>
+        <form onSubmit={this.subscribe}>
+          <p>
+            User <input ref="publisher" value={this.state.publisher} onChange={this.handlePublisher} /> arrives at my location. <input type="submit" value="Subscribe" />
+          </p>
+        </form>
       </div>
 
       {this.renderSubscriptions()}
@@ -137,11 +139,15 @@ var Home = React.createClass({
       </div>
     }.bind(this));
 
-    var src = Math.random() > 0.1 ? 'audio/phonering.wav' : 'audio/halleluj.wav';
+    // play a sound on new notifications
+    this.prevTriggerCount = this.triggerCount;
+    this.triggerCount =  this.state.triggers.length;
+    if (this.triggerCount > this.prevTriggerCount) {
+      this.playSound();
+    }
 
     return <div className="notifications">
       {notifications}
-      <audio id="beep" src={src} preload="auto"></audio>
     </div>;
   },
 
@@ -166,7 +172,8 @@ var Home = React.createClass({
     this.setState({publisher: event.target.value});
   },
 
-  subscribe: function () {
+  subscribe: function (event) {
+    event.preventDefault();
     this.saveSubscription(this.state.publisher);
   },
 
@@ -262,11 +269,6 @@ var Home = React.createClass({
       success: function (triggers) {
         console.log('triggers', triggers);
 
-        // play a sound
-        if (triggers.length > this.state.triggers.length) {
-          document.getElementById('beep').play()
-        }
-
         // FIXME: reloading subscriptions should not be triggered here but in the messageTimer
         if (triggers.length > 0) {
           this.loadSubscriptions();
@@ -304,5 +306,20 @@ var Home = React.createClass({
 
   yesNoUnknown: function (value) {
     return value === true ? 'yes' : value === false ? 'no' : 'unknown';
+  },
+
+  playSound: function () {
+    console.log('play sound');
+
+    var src = Math.random() > 0.1 ? 'audio/phonering.wav' : 'audio/halleluj.wav';
+    var sound = document.createElement('embed');
+    sound.width = '0';
+    sound.height = '0';
+    sound.src = src;
+    document.body.appendChild(sound);
+
+    setTimeout(function () {
+      document.body.removeChild(sound);
+    }, 10000);
   }
 });
