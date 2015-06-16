@@ -27,6 +27,34 @@ $ heroku open
 The app is deployed at: https://adhoc-arranger.herokuapp.com/
 
 
+## Install and bundle webapp
+
+The web application is located in the folder `./webapp`. 
+
+To install or update the npm dependencies of the webapp, run
+
+```sh
+$ cd ./webapp
+$ npm install
+```
+
+To bundle the web application:
+
+```sh
+$ npm run bundle
+```
+
+To run the development version of the web application, start the web server,
+then open the following url in your browser:
+
+[http://localhost:5000/dev.html](http://localhost:5000/dev.html).
+
+To run the production version:
+
+[http://localhost:5000](http://localhost:5000).
+
+
+
 ## Documentation
 
 For more information about using Java on Heroku, see these Dev Center articles:
